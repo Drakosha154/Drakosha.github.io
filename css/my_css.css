@@ -1,0 +1,32 @@
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1 0 auto;
+  }
+
+.point {
+  cursor: pointer
+}
+
+li{
+  font-size: 17px;
+ }
+
+ .back-to-top {
+  position: fixed;
+  right: 2rem;
+  bottom: 2rem;
+}
+
+.hidden {
+  display: none;
+}
+
+pre {
+  display: block;
+  
+}

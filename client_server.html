@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="./css/materialize.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="./css/my_css.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <title>Микросервисы</title>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+  <body>
+    <header>
+      <nav class="nav-extended top-nav">
+        <div class="nav-wrapper">
+          <a href="./Main.html" class="brand-logo center flow-text">Микросервисы</a>
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li id="dropdown1"><a href="#">Обзор<i class="material-icons right">arrow_drop_down</i></a></li>
+            <li id="dropdown2"><a href="#">Примеры<i class="material-icons right">arrow_drop_down</i></a></li>
+          </ul>
+          <ul id="nav-mobile" class="hide-on-large-only">
+            <li id="dropdown3" class="right"><a href="#">Обзор</a></li>
+            <li id="dropdown4" class="left"><a href="#">Примеры</a></li>
+          </ul>
+        </div>
+        <div id="drop1" class="nav-content" style="display: none;">
+          <ul class="tabs tabs-transparent">
+            <li class="tab"><a href="./micro_monolit.html">Микросервисная архитектура vs монолитная</a></li>
+            <li class="tab"><a href="./Connect.html">Способы общения микросервисов</a></li>
+            <li class="tab"><a href="./Huge_connect.html">Основные инструменты общения</a></li>
+            <li class="tab"><a href="./Bonus.html">Бонус</a></li>
+          </ul>
+        </div>
+        <div id="drop2" class="nav-content" style="display: none;">
+          <ul class="tabs tabs-transparent">
+            <li class="tab"><a href="./example.html">Пример микросервисной архитектуры</a></li>
+            <li class="tab"><a href="./client_server.html">Реализация клиента и сервера</a></li>
+            <li class="tab"><a href="./connection_micro.html">Связываем микросервисы вместе</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <div id="slide-out" class="sidenav">
+        <div class="container">
+            <p>Хотя Protobuf выполняет проверку типов, нам все равно нужно проверять фактические значения. Когда мы реализуем микросервис с рекомендациями, мы должны убедиться, что все поля содержат правильные данные. Это справедливо для любого сервиса, независимо от того, используем ли мы Protobuf, JSON или что-то еще.</p>
+        </div>
+      </div>
+      <!--Main screen-->
+      <div class="container">
+        <div class="row">
+          <div class="col s12 m10 offset-m1 xl9 offset-xl1">
+            <h3><b>Клиент RPC</b></h3>
+            <h6>Сгенерированный на самом деле он не предназначен для чтения людьми. Запустим интерактивную оболочку Python, чтобы узнать, как взаимодействовать с этим кодом:</h6>
+            <pre><code class="python">
+>>> from recommendations_pb2 import BookCategory, RecommendationRequest
+>>> request = RecommendationRequest(
+...     user_id=1, category=BookCategory.SCIENCE_FICTION, max_results=3
+... )
+>>> request.category
+1
+            </code></pre>
+            <h6>Компилятор Protobuf сгенерировал проверку типов в Python, соответствующую типам в коде Protobuf. Проверим, что есть проверка типов:</h6>
+            <pre><code class="python">
+>>> request = RecommendationRequest(
+...     user_id="oops", category=BookCategory.SCIENCE_FICTION, max_results=3
+... )
+Traceback (most recent call last):
+    File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+TypeError: 'oops' has type str, but expected one of: int, long
+            </code></pre>
+            <h6>Важное замечание: все поля в proto3 являются необязательными. Поэтому нужно убедиться, что они все настроены. Если вы не укажете какое-то значение, по умолчанию оно будет равно нулю для числовых типов и пустой строке для строк:</h6>
+            <pre><code class="python">
+>>> request = RecommendationRequest(
+...     user_id=1, category=BookCategory.SCIENCE_FICTION
+... )
+>>> request.max_results
+0
+            </code></pre>
+            <div class="card blue-grey darken-1">
+                <div class="card-content white-text center-align sidenav-trigger z-depth-2 point" data-target="slide-out">
+                  <span class="card-title">Примечание...</span>
+                </div>
+            </div>
+            <h6>Созданный файл recommendations_pb2.py содержит определения типов. Файл recommendations_pb2_grpc.py содержит структуру для клиента и сервера. Инструкции импорта, необходимые для создания клиента:</h6>
+            <pre><code class="python">
+>>> import grpc
+>>> from recommendations_pb2_grpc import RecommendationsStub
+            </code></pre>
+            <h6>Здесь мы импортируем модуль grpc, предоставляющий функции для настройки подключений к удаленным серверам. Затем импортируем заглушку (stub) для клиента. Это заглушка, потому как сам клиент не имеет никаких функций – он лишь обращается к удаленному серверу и возвращает результат.</h6>
+            <h6>Вернувшись к коду Protobuf, в конце мы увидим раздел service Recommendations {...}. Компилятор Protobuf берет имя микросервиса Recommendations, и добавляет к нему Stub, чтобы сформировать имя клиента RecommendationsStub.</h6>
+            <h6>Теперь мы можем сделать RPC-запрос:</h6>
+            <pre><code class="python">
+>>> channel = grpc.insecure_channel("localhost:50051")
+>>> client = RecommendationsStub(channel)
+>>> request = RecommendationRequest(
+...     user_id=1, category=BookCategory.SCIENCE_FICTION, max_results=3
+... )
+>>> client.Recommend(request)
+Traceback (most recent call last):
+    ...
+grpc._channel._InactiveRpcError: &lt;_InactiveRpcError of RPC that terminated with:
+        status = StatusCode.UNAVAILABLE
+        details = "failed to connect to all addresses"
+        ...
+            </code></pre>
+            <h6>На порту 50051 мы создали соединение с localhost, то есть вашей собственной машиной. Порт 50051 является стандартным портом для gRPC, при желании вы можете его изменить. Затем мы передаем канал RecommendationsStub, чтобы создать экземпляр клиента.</h6>
+            <h6>Теперь мы можем вызвать метод Recommend, который мы определили в микросервисе Recommendations. Однако мы получаем исключение, поскольку микросервис пока еще не работает на localhost: 50051. Пора приняться за серверную часть.</h6>
+            <h3><b>Сервер RPC</b></h3>
+            <h6>Начнем с инструкций импорта и добавления некоторых образцов данных:</h6>
+            <pre><code class="python">
+# recommendations/recommendations.py
+
+from concurrent import futures
+import random
+
+
+import grpc
+
+from recommendations_pb2 import (
+    BookCategory,
+    BookRecommendation,
+    RecommendationResponse,
+)
+
+import recommendations_pb2_grpc
+
+books_by_category = {
+    BookCategory.MYSTERY: [
+        BookRecommendation(id=1, title="The Maltese Falcon"),
+        BookRecommendation(id=2, title="Murder on the Orient Express"),
+        BookRecommendation(id=3, title="The Hound of the Baskervilles"),
+    ],
+
+    BookCategory.SCIENCE_FICTION: [
+        BookRecommendation(
+            id=4, title="The Hitchhiker's Guide to the Galaxy"
+        ),
+        BookRecommendation(id=5, title="Ender's Game"),
+        BookRecommendation(id=6, title="The Dune Chronicles"),
+    ],
+
+    BookCategory.SELF_HELP: [
+        BookRecommendation(
+            id=7, title="The 7 Habits of Highly Effective People"
+        ),
+
+        BookRecommendation(
+            id=8, title="How to Win Friends and Influence People"
+        ),
+
+        BookRecommendation(id=9, title="Man's Search for Meaning"),
+    ],
+}
+            </code></pre>
+            <h6>Начнем с инструкций импорта и добавления некоторых образцов данных:</h6>
+            <pre><code class="python">
+class RecommendationService(
+    recommendations_pb2_grpc.RecommendationsServicer
+):
+
+    def Recommend(self, request, context):
+        if request.category not in books_by_category:
+            context.abort(grpc.StatusCode.NOT_FOUND, "Category not found")
+
+        books_for_category = books_by_category[request.category]
+        num_results = min(request.max_results, len(books_for_category))
+        books_to_recommend = random.sample(
+            books_for_category, num_results
+        )
+
+        return RecommendationResponse(recommendations=books_to_recommend)
+            </code></pre>
+            <h6>Класс RecommendationService – это реализация нашего микросервиса. Обратите внимание, что класс наследуется от подкласса RecommendationServicer. Это часть интеграции с gRPC.</h6>
+            <h6>Далее мы определяем метод Recommend. Он должен иметь то же имя, что и RPC, который мы определяем в своем файле Protobuf. Метод также принимает Request и возвращает RecommendationResponse, как и в определении Protobuf. Параметр context позволяет установить код состояния для response.</h6>
+            <h6>Метод abort() для завершения запроса и устанавливается код состояния NOT_FOUND, если вы получаете неожиданную категорию. Поскольку gRPC построен поверх HTTP/2, код состояния аналогичен стандартному коду состояния HTTP. Его установка позволяет клиенту выполнять различные действия в зависимости от полученного кода. Это также помогает промежуточному программному обеспечению (например, системам мониторинга), регистрировать, какое число запросов содержит ошибки.</h6>
+            <h6>В следующих строчках случайным образом выбираются книги из выбранной категории, которые можно рекомендовать. Количество рекомендаций ограничено max_results.</h6>
+            <h6>В последней строке возвращается RecommendationResponse со списком рекомендаций книг.</h6>
+            <h6>Обратите внимание, что было бы логично при возникновении ошибки вызывать исключение, чем использовать abort(), как в этом примере. Однако тогда ответ не установит код состояния правильно.</h6>
+            <h6>Класс RecommendationService уже определяет реализацию микросервиса, но нам как-то нужно запустить сам сервис. Для этого мы определим функцию serve():</h6>
+            <pre><code class="python">
+def serve():
+server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+recommendations_pb2_grpc.add_RecommendationsServicer_to_server(
+    RecommendationService(), server
+)
+server.add_insecure_port("[::]:50051")
+server.start()
+server.wait_for_termination()
+            
+
+if __name__ == "__main__":
+    serve()
+            </code></pre>
+            <h6>serve() запускает сетевой сервер и использует класс микросервиса для обработки запросов. В приведенном коде сначала создается сервер gRPC, которому мы указываем использовать 10 потоков для обслуживания запросов, что совершенно излишне для демонстрационного примера, но является хорошим дефолтным значением для реального микросервиса Python. Далее мы связываем класс с сервером. Это похоже на добавление обработчика запросов. Потом мы указываем серверу работать на порту 50051. Далее мы запускаем микросервис и ждем, пока он не остановится. Единственный способ остановить его в этом случае – нажать в терминале комбинацию [Ctrl + C].</h6>
+            <h6>Не закрывая терминал, который мы использовали для тестирования клиента, откроем новый терминал и выполним следующую команду:</h6>
+            <pre><code class="python">
+python recommendations.py
+            </code></pre>
+            <h6>Эта команда запустит микросервис Recommendations, так что мы сможем протестировать клиента на некоторых реальных данных. Теперь вернемся к терминалу, который мы использовали для тестирования клиента, чтобы создать заглушку канала. Если вы оставили консоль открытой, вы можете пропустить инструкции импорта:</h6>
+            <pre><code class="python">
+>>> import grpc
+>>> from recommendations_pb2_grpc import RecommendationsStub
+>>> channel = grpc.insecure_channel("localhost:50051")
+>>> client = RecommendationsStub(channel)
+            </code></pre>
+            <h6>Теперь, когда у нас есть клиентский объект, мы можем сделать запрос:</h6>
+            <pre><code class="python">
+>>> request = RecommendationRequest(
+...    user_id=1, category=BookCategory.SCIENCE_FICTION, max_results=3)
+>>> client.Recommend(request)
+recommendations {
+    id: 6
+    title: "The Dune Chronicles"
+}
+recommendations {
+    id: 4
+    title: "The Hitchhiker\'s Guide To The Galaxy"
+}
+recommendations {
+    id: 5
+    title: "Ender\'s Game"
+}
+            </code></pre>
+            <h6>Работает! Мы сделали RPC-запрос к микросервису и получили ответ. Обратите внимание, что ваш результат будет отличаться, потому что рекомендации выбираются случайным образом.</h6>
+            <h6>Теперь, когда у нас есть сервер, мы можем реализовать микросервис Marketplace и заставить его вызывать микросервис рекомендаций. Можно закрыть консоль Python, но оставьте включенным микросервис Recommendations.</h6>
+          </div>
+        </div>
+      </div>
+    </main>
+    <button class="back-to-top hidden btn-floating"><i class="material-icons right">arrow_upward</i></button>
+    <footer class="page-footer docs-footer">
+      <div class="container">
+        <div class="row">
+          <div class="col s12 m10 offset-m1 xl9 offset-xl1">
+            <p>Made by Drakosha<span class="material-icons">favorite</span></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script type="text/javascript" src="js/my_js.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+  </body>
+</html>

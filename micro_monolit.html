@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="css/my_css.css"/>
+    <title>Микросервисы</title>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+  <body>
+    <header>
+      <nav class="nav-extended top-nav">
+        <div class="nav-wrapper">
+          <a href="./Main.html" class="brand-logo center flow-text">Микросервисы</a>
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li id="dropdown1"><a href="#">Обзор<i class="material-icons right">arrow_drop_down</i></a></li>
+            <li id="dropdown2"><a href="#">Примеры<i class="material-icons right">arrow_drop_down</i></a></li>
+          </ul>
+          <ul id="nav-mobile" class="hide-on-large-only">
+            <li id="dropdown3" class="right"><a href="#">Обзор</a></li>
+            <li id="dropdown4" class="left"><a href="#">Примеры</a></li>
+          </ul>
+        </div>
+        <div id="drop1" class="nav-content" style="display: none;">
+          <ul class="tabs tabs-transparent">
+            <li class="tab"><a href="./micro_monolit.html">Микросервисная архитектура vs монолитная</a></li>
+            <li class="tab"><a href="./Connect.html">Способы общения микросервисов</a></li>
+            <li class="tab"><a href="./Huge_connect.html">Основные инструменты общения</a></li>
+            <li class="tab"><a href="./Bonus.html">Бонус</a></li>
+          </ul>
+        </div>
+        <div id="drop2" class="nav-content" style="display: none;">
+          <ul class="tabs tabs-transparent">
+            <li class="tab"><a href="./example.html">Пример микросервисной архитектуры</a></li>
+            <li class="tab"><a href="./client_server.html">Реализация клиента и сервера</a></li>
+            <li class="tab"><a href="./connection_micro.html">Связываем микросервисы вместе</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <div id="slide-out" class="sidenav">
+        <div class="container">
+          <p >Благодаря тому, что части приложения автономны, его, как и любую распределённую систему, легко развивать и обновлять: добавление или улучшение отдельных функций никак не повлияет на остальные компоненты. И это главное отличие микросервисного приложения от монолитного, в котором все блоки кода связаны между собой, и даже небольшие изменения хотя бы в одном из них поменяют работу всей системы.</p>
+        </div>
+      </div>
+      <!--Main screen-->
+      <div class="container">
+        <div class="row">
+          <div class="col s12 m10 offset-m1 xl9 offset-xl1">
+            <h3><b>Микросервисная архитектура vs монолитная</b></h3>
+            <h6>Приложение с микросервисной архитектурой разделено на небольшие не зависящие друг от друга компоненты — микросервисы. У каждого из них своя бизнес-задача: например, управлять каталогом, хранить и обновлять содержимое корзины или проводить оплату заказа.</h6>
+            <div class="center-align">
+                <h6 class="btn sidenav-trigger" data-target="slide-out">Расскройте главное отличие микросервисов от монолитов</h6>
+            </div>
+            <h6>Вот пример архитектуры микросервисов в Yandex Cloud</h6>
+            <img class="responsive-img center-align z-depth-2" src="./microservices-3.png.webp">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Микросервисное приложение</th>
+                        <th>Монолитное приложение</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Скорость релизов</strong></td>
+                        <td><strong>Скорость релизов</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Чтобы запустить новые функции или обновить существующие, достаточно изменить один модуль приложения. Это позволяет ускорить разработку и&nbsp;чаще выпускать обновления.</td>
+                        <td>Чтобы протестировать релиз и&nbsp;подготовить к&nbsp;нему приложение, нужно обновить всю систему, что может привести к&nbsp;неожиданным сбоям и&nbsp;увеличить время отладки.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Диапазон технологий</strong></td>
+                        <td><strong>Диапазон технологий</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Для каждого сервиса можно использовать свой язык программирования, способ хранения данных, необходимые библиотеки.</td>
+                        <td>Код монолитного приложения&nbsp;— единое целое, поэтому вся команда должна придерживаться уже выбранных инструментов и&nbsp;методов.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Процесс разработки</strong></td>
+                        <td><strong>Процесс разработки</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Микросервисная архитектура позволяет вести гибкую разработку и&nbsp;при необходимости быстро изменить состав команды или требования к&nbsp;продукту.</td>
+                        <td>Монолитный подход более требователен к&nbsp;порогу вхождения: каждому новичку придётся полностью изучить код системы и&nbsp;её&nbsp;функциональность.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Оптимизация приложения</strong></td>
+                        <td><strong>Оптимизация приложения</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Управление ресурсами, инфраструктурой и&nbsp;функциональностью приложения можно доверить разным сервисам и&nbsp;оптимизировать каждый из&nbsp;них по&nbsp;отдельности.</td>
+                        <td>При оптимизации монолитного приложения нужно постоянно учитывать внутренние связи между его модулями: обновление хотя&nbsp;бы в&nbsp;одного из&nbsp;них приведёт к&nbsp;изменению системы в&nbsp;целом.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Масштабируемость</strong></td>
+                        <td><strong>Масштабируемость</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Если нагрузка на&nbsp;ресурсы микросервисов увеличится, они масштабируются автоматически. А&nbsp;гибкий процесс разработки позволит усилить команду дополнительными сотрудниками.</td>
+                        <td>Если вы&nbsp;решите изменить хотя&nbsp;бы один блок, придётся масштабировать всё приложение.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Отказоустойчивость</strong></td>
+                        <td><strong>Отказоустойчивость</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Проблемы внутри одного сервиса не&nbsp;нарушат работу системы в&nbsp;целом и&nbsp;не&nbsp;приведут к&nbsp;появлению новых ошибок.</td>
+                        <td>Все элементы монолитного приложения связаны друг с&nbsp;другом напрямую или косвенно: сбой внутри одного модуля может вызвать полный отказ системы</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h6>Конечно, микросервисный подход не лишён недостатков. При кажущейся простоте и логичности деления большого продукта на самостоятельные сервисы разработка распределённой системы — процесс сложный и с технической, и с организационной точек зрения. Плюсы могут обернуться минусами:</h6>
+            <ol>
+                <li>Сбой одного сервиса не приведёт к полному отказу приложения, но любая распределённая система имеет и другие слабые места: потенциальные проблемы связи её элементов друг с другом, сетевые задержки, возможная неконсистентность данных.</li>
+                <li>Вы сэкономите, если будете платить только за те ресурсы, которые потребляют микросервисы, но должны будете предусмотреть расходы на внедрение облачных технологий, отдельное развёртывание каждого нового сервиса и его покрытие отдельными тестами и мониторингами.</li>
+                <li>Контролировать качество решения отдельных бизнес-задач проще и эффективнее, чем оценивать систему в целом, но настроить рабочие процессы большой команды разработчиков не так уж легко.</li>
+            </ol>
+        </div>
+        </div>
+      </div>
+    </main>
+    <button class="back-to-top hidden btn-floating"><i class="material-icons right">arrow_upward</i></button>
+    <footer class="page-footer docs-footer">
+      <div class="container">
+        <div class="row">
+          <div class="col s12 m10 offset-m1 xl9 offset-xl1">
+            <p>Made by Drakosha<span class="material-icons">favorite</span></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!--JavaScript at end of body for optimized loading-->
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script type="text/javascript" src="js/my_js.js"></script>
+  </body>
+</html>
